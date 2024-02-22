@@ -33,14 +33,11 @@ def get_user(user_id: str):
         return UserInDB(**user_data)
 
 
-print(get_user('test'))
-
-
 def authenticate_user(user_id: str, password: str):
     user = get_user(user_id)
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password):
         return False
     return user
 

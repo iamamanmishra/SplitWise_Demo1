@@ -1,5 +1,8 @@
 from datetime import datetime
 
+from utils.constants import database_name, user_collection_name
+from utils.dbOperations import find_single_data
+
 
 def get_concatenated_datetime():
     # Get the current date and time
@@ -17,9 +20,9 @@ def get_current_date():
 
     return current_date
 
-
-# # Example usage
-# print(get_current_date())
-#
-# # Example usage
-# print(get_concatenated_datetime())
+def checkUserExistanceInDB(user_id):
+    # check if the user_id exists in database or not
+    dataExistance = find_single_data(database_name, user_collection_name, {"user_id": user_id})
+    if dataExistance:
+        return True
+    return False

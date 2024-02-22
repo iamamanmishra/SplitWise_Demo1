@@ -5,9 +5,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 from starlette.responses import JSONResponse
 
-from modules.login_user import authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRES_MINUTES
+from modules.add_expense import add_expense
+from modules.create_room import createRoom
+from modules.login_user import authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRES_MINUTES, get_current_user
 from modules.register_user import register_user
-from schemas.schemas import RegisterUser, Token
+from modules.room_Transaction_Views import show_transactions_under_room
+from modules.search_room import getAllRooms
+from modules.settle_transactions import settle_room_transactions
+from schemas.schemas import RegisterUser, createRoom_ipParams, add_expense, Token
 
 router = APIRouter(prefix='', tags=[], responses={404: {"description": "Not found"}})
 
@@ -27,7 +32,7 @@ async def register(registerUser: RegisterUser):
     return JSONResponse({'user_id': response_user_id})
 
 
-@router.post("/login", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -37,3 +42,44 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRES_MINUTES)
     access_token = create_access_token(data={"sub": user.user_id}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/createRoom")
+async def create_room(create_room_object: createRoom_ipParams):
+    user_id = create_room_object.user_id
+    room_name = create_room_object.room_name
+    currency = create_room_object.currency
+    members = create_room_object.members
+    # call create room function
+    return createRoom(user_id, room_name, currency, members)
+
+
+@router.post("/searchRooms")
+async def create_room(create_room_object: createRoom_ipParams):
+    user_id = create_room_object.user_id
+    return getAllRooms(user_id)
+
+
+@router.post("/addTransactions")
+async def add_Expenses(addTransaction: add_expense):
+    room_id = addTransaction.room_id
+    paid_user_id = addTransaction.paid_user_id
+    amount = addTransaction.amount
+    expense_name = addTransaction.expense_name
+    fairsplit_members = addTransaction.fairsplit_members
+    print(room_id, paid_user_id, amount, expense_name, fairsplit_members)
+    return add_expense(room_id, paid_user_id, amount, expense_name, fairsplit_members)
+
+
+@router.post("/show_transactions_under_room")
+async def add_Expenses(addTransaction: add_expense):
+    room_id = addTransaction.room_id
+    found_room_details = show_transactions_under_room(room_id)
+    return {"room_transaction_details": found_room_details}
+
+
+@router.post("/settleUp")
+async def settle_room_transaction(addTransaction: add_expense):
+    room_id = addTransaction.room_id
+    settle_statements = settle_room_transactions(room_id)
+    return {"settle_statements": settle_statements}
