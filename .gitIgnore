@@ -1,3 +1,8 @@
 .idea/
 schemas/__pycache__/
 utils/__pycache__/
+modules/__pycache__/add_expense.cpython-310.pyc
+modules/__pycache__/create_room.cpython-310.pyc
+modules/__pycache__/room_Transaction_Views.cpython-310.pyc
+modules/__pycache__/search_room.cpython-310.pyc
+modules/__pycache__/settle_transactions.cpython-310.pyc

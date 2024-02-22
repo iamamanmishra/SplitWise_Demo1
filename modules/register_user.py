@@ -20,6 +20,7 @@ def register_user(user_id, full_name, password, email):
     else:
         # create a document
         dict_data = {
+            "_id":unique_user_id,
             "user_id": unique_user_id,
             "full_name": full_name,
             "password": hashed_password,
