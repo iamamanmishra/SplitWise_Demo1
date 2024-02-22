@@ -1,20 +1,29 @@
+from modules.login import get_username_from_token
 from utils.constants import database_name, expense_collection_name
 from utils.dbOperations import insertData
 
 
-def addExpense(room_id,paid_user_id,amount,expense_name,fairsplit_members):
-    # check if the user_id exists in following room
+def addExpense(room_id, Authorization, amount, expense_name, fairsplit_members):
+    try:
+        # Extract admin name from the access token
+        token = Authorization.split(" ")[1]
+        paid_user_id = get_username_from_token(token)
 
-    # create a document
-    sample_json = {
-        "room_id": room_id,
-        "paid_user_id": paid_user_id,
-        "amount": amount,
-        "expense_name": expense_name,
-        "fairsplit_members": fairsplit_members
-    }
+        # Add logged-in user to the members list
+        fairsplit_members.append(paid_user_id)
 
-    # insert data in database
-    insertData(database_name, expense_collection_name, sample_json)
-    print("Expense added successfully")
+        # Create a document
+        expense_data = {
+            "room_id": room_id,
+            "paid_user_id": paid_user_id,
+            "amount": amount,
+            "expense_name": expense_name,
+            "fairsplit_members": fairsplit_members
+        }
 
+        # Insert data into the database
+        insertData(database_name, expense_collection_name, expense_data)
+        print("Expense added successfully")
+
+    except Exception as e:
+        print(f"An error occurred while adding expense: {e}")

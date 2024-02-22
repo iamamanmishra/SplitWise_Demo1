@@ -1,9 +1,13 @@
 # Get all room details for specific user
+from modules.login import get_username_from_token
 from utils.constants import database_name, room_collection_name
 from utils.dbOperations import find_data
 
 
-def getAllRooms(user_id):
+def getAllRooms(Authorization):
+    # Extract admin name from the access token
+    token = Authorization.split(" ")[1]
+    user_id = get_username_from_token(token)
     room_details_list = find_data(database_name, room_collection_name, '')
     found_rooms = []
     for room_detailed_json in room_details_list:

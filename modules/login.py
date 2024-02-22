@@ -1,4 +1,3 @@
-# Constants
 from datetime import datetime, timedelta
 
 import bcrypt
@@ -10,49 +9,73 @@ from utils.constants import database_name, user_collection_name, SECRET_KEY, ALG
 from utils.dbOperations import find_data
 
 
-# authenticate the user
-def authenticate_user(user_id, password):
+# Function to authenticate the user
+def authenticate_user(user_id: str, password: str):
     try:
-        # check user and password from DB
-        json = find_data(database_name, user_collection_name, {"user_id": user_id})
-        user_id = json[0]['user_id']
-        pwd = json[0]['password']
-        # while reading remove 1st and last char from database  pwd[2:-1]
-        # converting the string into byte format
-        hashed_password = pwd[2:-1].encode('utf-8')
-        if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
-            print("Password matches")
-            return user_id
+        # Check user and password from the database
+        user_data = find_data(database_name, user_collection_name, {"_id": user_id})
+        if user_data:
+            stored_user_id = user_data[0]['_id']
+            stored_password = user_data[0]['password']
+
+            # Decode the stored password from byte format
+            hashed_password = stored_password[2:-1].encode('utf-8')
+
+            # Check if the provided password matches the stored password
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+                print("Password matches")
+                return stored_user_id
+            else:
+                print("Password does not match")
+                return None
         else:
-            print("Password does not match")
+            print("User not found")
             return None
-    except:
+    except Exception as e:
+        print(f"Error during user authentication: {e}")
         return None
 
 
+# Function to create an access token
 def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    try:
+        to_encode = data.copy()
+        if expires_delta:
+            expire = datetime.utcnow() + expires_delta
+        else:
+            expire = datetime.utcnow() + timedelta(minutes=15)
+        to_encode.update({"exp": expire})
+        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        return encoded_jwt
+    except Exception as e:
+        print(f"Error creating access token: {e}")
+        return None
 
 
-def doLogin(user_id, password):
-    user = authenticate_user(user_id, password)
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user}, expires_delta=access_token_expires)
-    return {"access_token": access_token, "token_type": "bearer"}
+# Function to handle user login
+def do_login(user_id: str, password: str):
+    try:
+        user = authenticate_user(user_id, password)
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid username or password")
+
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(data={"sub": user}, expires_delta=access_token_expires)
+
+        if not access_token:
+            raise HTTPException(status_code=500, detail="Failed to create access token")
+
+        return {"access_token": access_token, "token_type": "bearer"}
+    except Exception as e:
+        print(f"Error during user login: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
+# OAuth2 password bearer instance
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+# Function to extract username from token
 def get_username_from_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -60,6 +83,3 @@ def get_username_from_token(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-# x = doLogin(user_id='test12320240222152020', password="testpassword123")
-# print(x)
-# x=get_username_from_token(token=token)
