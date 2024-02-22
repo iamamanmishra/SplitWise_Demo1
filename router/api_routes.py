@@ -12,7 +12,7 @@ from modules.register_user import register_user
 from modules.room_Transaction_Views import show_transactions_under_room
 from modules.search_room import getAllRooms
 from modules.settle_transactions import settle_room_transactions
-from schemas.schemas import RegisterUser, createRoom_ipParams, add_expense, Token
+from schemas.schemas import RegisterUser, createRoom_ipParams, add_expense, Token, User
 
 router = APIRouter(prefix='', tags=[], responses={404: {"description": "Not found"}})
 
@@ -45,7 +45,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 @router.post("/createRoom")
-async def create_room(create_room_object: createRoom_ipParams):
+async def create_room(create_room_object: createRoom_ipParams, current_user: User = Depends(get_current_user)):
     user_id = create_room_object.user_id
     room_name = create_room_object.room_name
     currency = create_room_object.currency
@@ -55,13 +55,13 @@ async def create_room(create_room_object: createRoom_ipParams):
 
 
 @router.post("/searchRooms")
-async def create_room(create_room_object: createRoom_ipParams):
+async def create_room(create_room_object: createRoom_ipParams, current_user: User = Depends(get_current_user)):
     user_id = create_room_object.user_id
     return getAllRooms(user_id)
 
 
-@router.post("/addTransactions")
-async def add_Expenses(addTransaction: add_expense):
+@router.post("/addTransactions", )
+async def add_Expenses(addTransaction: add_expense, current_user: User = Depends(get_current_user)):
     room_id = addTransaction.room_id
     paid_user_id = addTransaction.paid_user_id
     amount = addTransaction.amount
@@ -72,14 +72,14 @@ async def add_Expenses(addTransaction: add_expense):
 
 
 @router.post("/show_transactions_under_room")
-async def add_Expenses(addTransaction: add_expense):
+async def add_Expenses(addTransaction: add_expense, current_user: User = Depends(get_current_user)):
     room_id = addTransaction.room_id
     found_room_details = show_transactions_under_room(room_id)
     return {"room_transaction_details": found_room_details}
 
 
 @router.post("/settleUp")
-async def settle_room_transaction(addTransaction: add_expense):
+async def settle_room_transaction(addTransaction: add_expense, current_user: User = Depends(get_current_user)):
     room_id = addTransaction.room_id
     settle_statements = settle_room_transactions(room_id)
     return {"settle_statements": settle_statements}
