@@ -3,6 +3,7 @@ from starlette.responses import JSONResponse
 
 from modules.add_expense import addExpense
 from modules.create_room import createRoom
+from modules.login import doLogin
 from modules.register_user import register_user
 from modules.room_Transaction_Views import show_transactions_under_room
 from modules.search_room import getAllRooms
@@ -29,6 +30,12 @@ async def register(registerUser: RegisterUser):
     return JSONResponse({'user_id': response_user_id})
 
 
+@router.post("/login")
+async def register(registerUser: RegisterUser):
+    user_id = registerUser.user_id
+    password = registerUser.password
+    return doLogin(user_id,password)
+
 @router.post("/createRoom")
 async def create_room(create_room_object: createRoom_ipParams):
     user_id = create_room_object.user_id
@@ -53,11 +60,12 @@ async def add_Expenses(addTransaction: add_expense):
     expense_name = addTransaction.expense_name
     fairsplit_members = addTransaction.fairsplit_members
     print(room_id, paid_user_id, amount, expense_name, fairsplit_members)
-    return addExpense(room_id, paid_user_id, amount, expense_name, fairsplit_members)
+    addExpense(room_id, paid_user_id, amount, expense_name, fairsplit_members)
+    return {"message":"Expense added successfully"}
 
 
 @router.post("/show_transactions_under_room")
-async def add_Expenses(addTransaction: add_expense):
+async def show_room_transactions(addTransaction: add_expense):
     room_id = addTransaction.room_id
     found_room_details=show_transactions_under_room(room_id)
     return {"room_transaction_details": found_room_details}

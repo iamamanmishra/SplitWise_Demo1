@@ -11,6 +11,10 @@ def register_user(user_id, full_name, password, email):
     unique_user_id=user_id+dayTime_string
     # Hash the password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    # storing the Bcrypt password as string format
+    # mongoDb saves the binary data in diff way
+    str_pwd=str(hashed_password)
+    print(str_pwd)
 
     # check if the user_id exists in database or not
     dataExistance=find_single_data(database_name,user_collection_name,{"user_id": user_id})
@@ -23,7 +27,7 @@ def register_user(user_id, full_name, password, email):
             "_id":unique_user_id,
             "user_id": unique_user_id,
             "full_name": full_name,
-            "password": hashed_password,
+            "password": str_pwd,
             "email": email
         }
         # insert data in database

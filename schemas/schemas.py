@@ -5,10 +5,10 @@ from pydantic import BaseModel
 
 
 class RegisterUser(BaseModel):
-    user_id: str
-    full_name: str
-    password: str
-    email: str
+    user_id: Optional[str]=None
+    full_name: Optional[str]=None
+    password: Optional[str]=None
+    email: Optional[str]=None
 
 
 class createRoom_ipParams(BaseModel):
