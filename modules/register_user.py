@@ -1,7 +1,9 @@
 import bcrypt
 
+
 from utils.constants import database_name, user_collection_name
 from utils.dbOperations import insertData
+from utils.logger_config import logger
 from utils.utils import get_concatenated_datetime
 
 
@@ -18,6 +20,7 @@ def register_user(first_name, last_name, password, email):
     Returns:
     - str: Unique user ID upon successful registration.
     """
+    logger.info("Calling register_user function..")
     try:
         # Create a unique user_id
         dayTime_string = get_concatenated_datetime()
@@ -40,8 +43,10 @@ def register_user(first_name, last_name, password, email):
         # Insert the user data into the database
         insertData(database_name, user_collection_name, user_document)
         print("User registration successful")
+        logger.info("register_user function executed successfully..")
         return unique_user_id
 
     except Exception as e:
         print(f"User registration failed: {e}")
+        logger.error(f"error inregister_user function, error {e}")
         return None

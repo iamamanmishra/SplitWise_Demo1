@@ -1,4 +1,5 @@
 from modules.room_Transaction_Views import show_transactions_under_room
+from utils.logger_config import logger
 
 
 def settle_room_transactions(room_id, Authorization):
@@ -44,8 +45,9 @@ def settle_room_transactions(room_id, Authorization):
             statement = f"{payment['payer']} owes Rs {payment['amount']:.2f} to {payment['payee']}"
             print(statement)
             summary_list.append(statement)
-
+        logger.info("settle_room_transactions function executed successfully...")
         return summary_list
 
     except Exception as e:
+        logger.exception(f"An error occurred while settling room transactions: {e}")
         print(f"An error occurred while settling room transactions: {e}")

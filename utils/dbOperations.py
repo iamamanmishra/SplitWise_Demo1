@@ -6,7 +6,6 @@ from utils.constants import mongoDBConnection
 # create a client
 client = pymongo.MongoClient(mongoDBConnection)
 print("Connected to DB")
-# print(client)
 
 
 def insertData(database_name, collection_name, dict_data):
@@ -29,7 +28,7 @@ def find_data(database_name, collection_name, dict_data_query):
     results = collection.find(dict_data_query)
     found_data_dict_list = []
     for result in results:
-        #print(result)
+        # print(result)
         found_data_dict_list.append(result)
     return found_data_dict_list
 
@@ -43,6 +42,3 @@ def find_single_data(database_name, collection_name, dict_data_query):
     if collection.find_one(dict_data_query):
         return True
     return False
-
-
-

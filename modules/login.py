@@ -7,6 +7,7 @@ from jose import JWTError, jwt
 
 from utils.constants import database_name, user_collection_name, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from utils.dbOperations import find_data
+from utils.logger_config import logger
 
 
 # Function to authenticate the user
@@ -20,19 +21,23 @@ def authenticate_user(user_id: str, password: str):
 
             # Decode the stored password from byte format
             hashed_password = stored_password[2:-1].encode('utf-8')
+            logger.warning("password has been converted from string to byte format")
 
             # Check if the provided password matches the stored password
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                 print("Password matches")
                 return stored_user_id
             else:
+                logger.critical("Password doesn't match, returning None")
                 print("Password does not match")
                 return None
         else:
             print("User not found")
+            logger.critical("Password doesn't match, returning None")
             return None
     except Exception as e:
         print(f"Error during user authentication: {e}")
+        logger.error(f"Error during user authentication: {e}")
         return None
 
 
@@ -46,6 +51,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        logger.info("Access token created....")
         return encoded_jwt
     except Exception as e:
         print(f"Error creating access token: {e}")
@@ -65,9 +71,12 @@ def do_login(user_id: str, password: str):
         if not access_token:
             raise HTTPException(status_code=500, detail="Failed to create access token")
 
+        logger.info("Access token created....")
+
         return {"access_token": access_token, "token_type": "bearer"}
     except Exception as e:
         print(f"Error during user login: {e}")
+        logger.error(f"Error during user login: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -81,5 +90,6 @@ def get_username_from_token(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload.get("sub")
     except JWTError:
+        logger.error("Invalid Token..")
         raise HTTPException(status_code=401, detail="Invalid token")
 
