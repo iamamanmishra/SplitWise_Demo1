@@ -20,6 +20,7 @@ def get_current_date():
 
     return current_date
 
+
 def checkUserExistanceInDB(user_id):
     # check if the user_id exists in database or not
     dataExistance = find_single_data(database_name, user_collection_name, {"_id": user_id})
