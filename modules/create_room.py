@@ -10,7 +10,9 @@ def createRoom(Authorization, room_id, currency, members_array):
         # Extract admin name from the access token
         token = Authorization.split(" ")[1]
         admin_name = get_username_from_token(token)
-        members_array.append(str(admin_name))
+        # add admin in member array if not present
+        if str(admin_name) not in members_array:
+            members_array.append(str(admin_name))
 
         # Check if the room already exists
         dataExistence = find_single_data(database_name, room_collection_name, {"room_id": room_id})

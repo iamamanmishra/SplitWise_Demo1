@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from router import api_routes
 
-SERVER_PORT = int(os.getenv("SERVER_PORT", 5090))
+SERVER_PORT = int(os.getenv("SERVER_PORT", 8000))
 
 
 def create_app() -> FastAPI:
@@ -36,4 +36,4 @@ async def add_process_time_header(request, call_next):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=SERVER_PORT, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=SERVER_PORT, reload=True)

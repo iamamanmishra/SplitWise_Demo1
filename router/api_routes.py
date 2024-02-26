@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Header
+from fastapi import APIRouter, Header
 from starlette.responses import JSONResponse
 
 # Importing functions and schemas from modules
@@ -42,13 +42,13 @@ async def login(loginuser: LoginUser):
 
 # Endpoint for creating a room
 @router.post("/createRoom")
-async def create_room(create_room_object: createRoom_ipParams,Authorization: str = Header(None)):
+async def create_room(create_room_object: createRoom_ipParams, Authorization: str = Header(None)):
     # access_token=create_room_object.access_token
     room_name = create_room_object.room_name
     currency = create_room_object.currency
     members = create_room_object.members
     # Calling create room function
-    return createRoom(Authorization,room_name, currency, members)
+    return createRoom(Authorization, room_name, currency, members)
 
 
 # Endpoint for searching rooms
@@ -59,7 +59,7 @@ async def search_rooms(Authorization: str = Header(None)):
 
 # Endpoint for adding transactions
 @router.post("/addTransactions")
-async def add_transactions(addTransaction: add_expense,Authorization: str = Header(None)):
+async def add_transactions(addTransaction: add_expense, Authorization: str = Header(None)):
     room_id = addTransaction.room_id
     amount = addTransaction.amount
     expense_name = addTransaction.expense_name
@@ -67,18 +67,17 @@ async def add_transactions(addTransaction: add_expense,Authorization: str = Head
     return addExpense(room_id, Authorization, amount, expense_name, fairsplit_members)
 
 
-
 # Endpoint for showing transactions under a room
 @router.post("/showTransactionsUnderRoom")
-async def show_transactions_under_room_endpoint(addTransaction: add_expense,Authorization: str = Header(None)):
+async def show_transactions_under_room_endpoint(addTransaction: add_expense, Authorization: str = Header(None)):
     room_id = addTransaction.room_id
-    found_room_details = show_transactions_under_room(room_id,Authorization)
+    found_room_details = show_transactions_under_room(room_id, Authorization)
     return {"room_transaction_details": found_room_details}
 
 
 # Endpoint for settling room transactions
 @router.post("/settleUp")
-async def settle_room_transaction_endpoint(addTransaction: add_expense,Authorization: str = Header(None)):
+async def settle_room_transaction_endpoint(addTransaction: add_expense, Authorization: str = Header(None)):
     room_id = addTransaction.room_id
-    settle_statements = settle_room_transactions(room_id,Authorization)
+    settle_statements = settle_room_transactions(room_id, Authorization)
     return {"settle_statements": settle_statements}
