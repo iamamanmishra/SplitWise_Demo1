@@ -3,14 +3,8 @@ LABEL maintainer="Arkaprabha Das"
 RUN mkdir /splitApplication/
 WORKDIR /splitApplication/
 COPY . /splitApplication/
-#RUN apt-get update && apt-get install -y ffmpeg portaudio19-dev
+RUN apt-get update
 RUN pip install -r requirements.txt
-
-# Installing Speaker ID package dependencies
-#RUN tar -zxvf speakerid-v1-py.tar.gz && cd speakerid-v1-py && pip install . && cd .. && rm -rf speakerid-v1-py
-
-#ENV SERVER_PORT 8022
-#ENV MODEL_TO_USE SPEAKER_ID
 
 EXPOSE 5090
 

@@ -64,8 +64,8 @@ async def add_transactions(addTransaction: add_expense,Authorization: str = Head
     amount = addTransaction.amount
     expense_name = addTransaction.expense_name
     fairsplit_members = addTransaction.fairsplit_members
-    addExpense(room_id, Authorization, amount, expense_name, fairsplit_members)
-    return {"message": "Expense added successfully"}
+    return addExpense(room_id, Authorization, amount, expense_name, fairsplit_members)
+
 
 
 # Endpoint for showing transactions under a room
