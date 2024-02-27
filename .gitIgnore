@@ -11,3 +11,4 @@ modules/__pycache__/login.cpython-310.pyc
 modules/__pycache__/register_user.cpython-310.pyc
 router/__pycache__/api_routes.cpython-310.pyc
 modules/__pycache__/login_user.cpython-310.pyc
+router/__pycache__/

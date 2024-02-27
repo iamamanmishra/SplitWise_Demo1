@@ -42,9 +42,14 @@ def settle_room_transactions(room_id, Authorization):
         summary_list = []
         # Print payment transactions and add to summary list
         for payment in payment_transactions:
-            statement = f"{payment['payer']} owes Rs {payment['amount']:.2f} to {payment['payee']}"
-            print(statement)
-            summary_list.append(statement)
+            settlement_json = {
+                "payer": payment['payer'],
+                "payee": payment['payee'],
+                "amount": payment['amount']
+            }
+            # statement = f"{payment['payer']} owes Rs {payment['amount']:.2f} to {payment['payee']}"
+            # print(statement)
+            summary_list.append(settlement_json)
         logger.info("settle_room_transactions function executed successfully...")
         return summary_list
 

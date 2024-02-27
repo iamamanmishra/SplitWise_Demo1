@@ -3,6 +3,7 @@ from starlette.responses import JSONResponse
 
 # Importing functions and schemas from modules
 from modules.add_expense import addExpense
+from modules.check_user_spendings import check_User_spendings
 from modules.create_room import createRoom
 from modules.login import do_login
 from modules.register_user import register_user
@@ -24,12 +25,12 @@ async def health_check():
 # Endpoint for user registration
 @router.post("/register")
 async def register(registerUser: RegisterUser):
+    user_name = registerUser.user_name
     first_name = registerUser.first_name
     last_name = registerUser.last_name
     password = registerUser.password
     email = registerUser.email
-    response_user_id = register_user(first_name, last_name, password, email)
-    return JSONResponse({'user_id': response_user_id})
+    return register_user(user_name, first_name, last_name, password, email)
 
 
 # Endpoint for user login
@@ -55,6 +56,11 @@ async def create_room(create_room_object: createRoom_ipParams,Authorization: str
 @router.get("/getRoomsForUser")
 async def search_rooms(Authorization: str = Header(None)):
     return getAllRooms(Authorization)
+
+
+@router.get("/getUserTransactions")
+async def check_User_spending(Authorization: str = Header(None)):
+    return check_User_spendings(Authorization)
 
 
 # Endpoint for adding transactions

@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from router import api_routes
 
-SERVER_PORT = int(os.getenv("SERVER_PORT", 8000))
+SERVER_PORT = int(os.getenv("SERVER_PORT", 5090))
 
 
 def create_app() -> FastAPI:

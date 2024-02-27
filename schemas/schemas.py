@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 
 class RegisterUser(BaseModel):
+    user_name: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     password: Optional[str] = None
