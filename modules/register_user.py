@@ -30,7 +30,6 @@ def register_user(unique_user_id, first_name, last_name, password, email):
             if unique_user_id == user_json['_id']:
                 return {"message": f"user_name: {unique_user_id} already exists"}
             if email == user_json['email']:
-
                 return {"message": f"Email: {email} already exists"}
 
         # Hash the password
@@ -51,9 +50,9 @@ def register_user(unique_user_id, first_name, last_name, password, email):
         insertData(database_name, user_collection_name, user_document)
         print("User registration successful")
         logger.info("register_user function executed successfully..")
-        return {"message":f"User {unique_user_id} registration successful"}
+        return {"message": f"User {unique_user_id} registration successful"}
 
     except Exception as e:
         print(f"User registration failed: {e}")
         logger.error(f"error inregister_user function, error {e}")
-        return None
+        return {"error": f"{e}"}

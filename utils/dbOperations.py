@@ -8,6 +8,18 @@ client = pymongo.MongoClient(mongoDBConnection)
 print("Connected to DB")
 
 
+def mongoDB_connection():
+    try:
+        # Connect to MongoDB server
+        client = pymongo.MongoClient(mongoDBConnection)
+        # Check if connected
+        client.server_info()  # This will raise an exception if not connected
+        return True
+    except Exception as e:
+        print("MongoDB is not connected:", e)
+        return False
+
+
 def insertData(database_name, collection_name, dict_data):
     # Access database
     db = client[database_name]
